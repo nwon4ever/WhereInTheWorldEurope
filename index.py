@@ -70,7 +70,7 @@ def handleDontKnowRequest(event):
 NUM_GAME_QUESTIONS = '5';
 
 def populate_game_questions():
-  """Build and return the list of questions for this game."""
+  """Build and return the list of questions for this game, no duplicates."""
   indices = random.sample(range(0, len(quizquestion.questions_all)), 5) # If user doesn't specify, choose 5 random questions
   return quizquestion.QuizQuestion.get_game_questions(indices)   
 
