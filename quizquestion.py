@@ -38,7 +38,7 @@ questions_france = [
 	("In which city is the Eiffel Tower located?", "Paris")
 ]
 questions_germany = [
-	("What is the capital of Germany", "Berlin"), 
+	("What is the capital of Germany?", "Berlin"), 
 	("Where in the world can you find the world's tallest gothic cathedral, the Cologne Cathedral?", "Germany")
 ]
 questions_other = [

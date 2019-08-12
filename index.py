@@ -44,6 +44,7 @@ def on_intent_request(event):
         return on_launch(event)
     elif intent_name == "AMAZON.CancelIntent":
         return
+    #repeat
 
 def handle_answer(event):
     is_game_in_progress = event['session']['attributes'] and event['session']['attributes']['questions']
@@ -56,13 +57,23 @@ def handle_answer(event):
     session_attributes = event['session']['attributes']
     user_answer = event['request']['intent']['slots']['Answer']['value']
     game_questions = session_attributes['questions']
-    curr_q = session_attributes["current_q_index"]
+    curr_q_ind = session_attributes["current_q_index"]
 
-    if user_answer == game_questions[curr_q][1]:
+    if user_answer == game_questions[curr_q_ind][1]:
         session_attributes["score"] += 1
-        return response_builder.build_json_response(user_answer + " is correct!", "","","", {}, False)
+        result = "correct!"
+        #return response_builder.build_json_response(user_answer + " is correct!", "","","", {}, False)
     else:
-        return response_builder.build_json_response(user_answer + " is incorrect! You suck.", "","","", {}, False)
+        result = "incorrect."
+        #return response_builder.build_json_response(user_answer + " is incorrect! You suck.", "","","", {}, False)
+    
+    session_attributes["current_q_index"] += 1
+    if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
+        next_q = game_questions[curr_q_ind + 1][0]
+        return response_builder.build_json_response("{0} is {1} Next question. {2}".format(user_answer, result, next_q), "", "", "", session_attributes, False)
+    else:
+        return response_builder.build_json_response("Game over!", "", "", "", session_attributes, True)
+    
 
 def handle_dont_know(event):
     pass
