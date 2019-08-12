@@ -12,7 +12,7 @@ def reprompt_builder(repr_text):
     reprompt_dict = {}
     reprompt_dict['outputSpeech'] = plain_text_builder(repr_text)
     return reprompt_dict
-    
+    e_dict
 def card_builder(c_text, c_title):
     card_dict = {}
     card_dict['type'] = "Simple"
@@ -28,8 +28,9 @@ def response_field_builder_with_reprompt_and_card(output_speech_text, card_text,
     speech_dict['shouldEndSession'] = value
     return speech_dict
 
-def build_json_response(output_speech_text, card_text, card_title, reprompt_text, value):
+def build_json_response(output_speech_text, card_text, card_title, reprompt_text, game_info, value):
     response_dict = {}
     response_dict['version'] = '1.0'
+    response_dict['sessionAttributes'] = game_info
     response_dict['response'] = response_field_builder_with_reprompt_and_card(output_speech_text, card_text, card_title, reprompt_text, value)
     return response_dict
