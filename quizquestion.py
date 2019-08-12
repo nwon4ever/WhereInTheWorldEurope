@@ -31,7 +31,7 @@ class QuizQuestion:
 # Idea: At the beginning of the game, users can choose a country/region to focus questions on
 questions_england = [
 	("What is the capital of the UK?", "London"), 
-	("In what country can you find a clock tower called the Big Ben?", "UK")
+	("In what country can you find a clock tower called the Big Ben?", "United Kingdom")
 ]
 questions_france = [
 	("What is the capital of France?", "Paris"), 
