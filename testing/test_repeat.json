@@ -10,7 +10,7 @@
       "userId": "amzn1.ask.account.AFD2RD2QWYKWH3PDTNNSUO7CQ2WQQPXBGAXC5XKTBZF7KVJRXTYVTARGA7YQHUVTU7HDB7FFGFCVOIWULABCTYH62RLKYSROWHH4KBRHYOIEGCH5CNQXHFWVOBWDALLEAUZZVJI4ZEBCI7O5NKSPRV7SBOWPBJUZP4HOGZFVMNOSBXZ3QM3HKFHAM2CQHYYMBZXYD75BZQCFXJY"
     },
     "attributes": {
-    	"current_q_index": 0,
+        "current_q_index": 0,
         "score": 0,
         "questions": [
             [
@@ -38,11 +38,11 @@
   },
   "request": {
     "type": "IntentRequest",
-    "requestId": "amzn1.echo-api.request.e2cee017-708d-4af7-a363-539f0c9e95fe",
-    "timestamp": "2019-08-12T05:03:19Z",
+    "requestId": "amzn1.echo-api.request.cd7ffe8a-a939-47ca-bb97-1f9a9774e019",
+    "timestamp": "2019-08-12T07:39:21Z",
     "locale": "en-US",
     "intent": {
-        "name": "AMAZON.HelpIntent",
+        "name": "AMAZON.RepeatIntent",
         "confirmationStatus": "NONE"
     }
 }

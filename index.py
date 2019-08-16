@@ -22,7 +22,7 @@ def on_launch():
     card_text = "Respond with your best guess for each question."
     card_title = "Welcome to WhereInTheWorld!"
 
-    session_attributes = {"questions" : populate_game_questions(), "current_q_index" : 0, "score" : 0}
+    session_attributes = {"questions" : populate_game_questions(), "current_q_index" : 0, "score" : 0, "user_prompted_to_start" : False}
     welcome_message += session_attributes["questions"][0][0]
     return response_builder.build_json_response(welcome_message, card_text, card_title, reprompt_message, session_attributes, False)
 
@@ -41,7 +41,7 @@ def on_intent_request(event):
         return handle_repeat(event)
     elif intent_name == "AMAZON.HelpIntent":
         return handle_help(event)
-    elif intent_name == "AMAZON.StartOverIntent":
+    elif intent_name == "AMAZON.NavigateHomeIntent":
         return on_launch()
     elif intent_name == "AMAZON.CancelIntent":
         return
@@ -56,8 +56,7 @@ def on_intent_request(event):
     #repeat
 
 def handle_answer(event):
-    is_game_in_progress = event['session']['attributes'] and event['session']['attributes']['questions']
-    if not is_game_in_progress:
+    if not has_session_attributes(event):
         # If the user responded with an answer but there is no game in progress, ask the user
         # if they want to start a new game. Set a flag to track that we've prompted the user.
         return ask_to_start_a_new_game()
@@ -75,19 +74,21 @@ def handle_answer(event):
     session_attributes["current_q_index"] += 1
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
         next_q = game_questions[curr_q_ind + 1][0]
-        return response_builder.build_json_response("{0} is {1} Next question. {2}".format(user_answer, result, next_q), "", "", "", session_attributes, False)
+        return response_builder.build_json_response("{0} is {1}. Next question. {2}".format(user_answer, result, next_q), "", "", "", session_attributes, False)
     else:
         score = session_attributes["score"]
         session_attributes = {"user_prompted_to_start" : True}
-        return response_builder.build_json_response("Game over! You got {0} out of {1} questions correct. Want to play again?".format(score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, False)
+        return response_builder.build_json_response("{0} is {1}. Game over! You got {2} out of {3} questions correct. Want to play again?".format(user_answer, result, score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, False)
     
 
 def handle_dont_know(event):
+    if not has_session_attributes(event):
+        return ask_to_start_a_new_game()
     session_attributes = event['session']['attributes']
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
-    answer_pass_response = "The answer is {0}.".format(game_questions[curr_q_ind][1])
+    answer_pass_response = "The correct answer is {0}.".format(game_questions[curr_q_ind][1])
 
     session_attributes["current_q_index"] += 1
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
@@ -99,7 +100,9 @@ def handle_dont_know(event):
         return response_builder.build_json_response("{0} Game over! You got {1} out of {2} questions correct. Want to play again?".format(answer_pass_response,score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, False)
 
 def handle_repeat(event):
-    session_attributes=event['session']['attributes']
+    if not has_session_attributes(event):
+        return ask_to_start_a_new_game()
+    session_attributes = event['session']['attributes']
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
     return response_builder.build_json_response(game_questions[curr_q_ind][0], "", "", "", session_attributes, False)
@@ -110,17 +113,27 @@ def handle_stop(event):
     return response_builder.build_json_response("Game over! You got {0} out of {1} questions correct. Thanks for playing!".format(score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, True)
 
 def handle_no(event):
+    if not has_session_attributes(event):
+        return ask_to_start_a_new_game()
     session_attributes = event['session']['attributes']
-    if session_attributes and session_attributes["user_prompted_to_start"]:
-        # After being asked "Do you want to start a game?", user said no
+    if session_attributes["user_prompted_to_start"] or session_attributes['user_prompted_to_continue']:
+        # User does not want to start or continue a game
         return handle_on_session_end_request(event)
     else:
         return ask_to_start_a_new_game()
 
 def handle_yes(event):
+    if not has_session_attributes(event):
+        return ask_to_start_a_new_game()
     session_attributes = event['session']['attributes']
-    if session_attributes and session_attributes["user_prompted_to_start"]:
-        # After being asked "Do you want to start a game?", user said yes
+    if 'user_prompted_to_continue' in session_attributes and session_attributes['user_prompted_to_continue']:
+        # After being asked "Do you want to keep playing?", user said yes
+        game_questions = session_attributes['questions']
+        curr_q_ind = session_attributes["current_q_index"]
+        next_q = game_questions[curr_q_ind][0]
+        return response_builder.build_json_response("Next question. {0}".format(next_q), "", "", "", session_attributes, False)
+    elif 'user_prompted_to_start' in session_attributes and session_attributes['user_prompted_to_start']:
+        # After being asked "Do you want to start a new game?", user said yes
         return on_launch()
     else:
         return ask_to_start_a_new_game()
@@ -128,10 +141,19 @@ def handle_yes(event):
 def handle_help(event):
     helpOutput = "I will ask you " + NUM_GAME_QUESTIONS + " geography related questions. " \
         + "Respond with your best guess. " \
-        + "To start a new game at any time, say, start game. " \
-        + "To repeat the last question, say, repeat. " \
+        + "To start a new game at any time, say start game. " \
+        + "To repeat the last question, say repeat. " \
+        + "If you don't know, say skip. " \
         + "Would you like to keep playing?"
-    return response_builder.build_json_response(helpOutput, "","","", {}, False)
+    session_attributes = event['session']['attributes']
+    if not session_attributes:
+        event['session']['attributes'] = {}
+    if 'questions' in session_attributes:
+        # If user asked for help in the middle of a game
+        session_attributes['user_prompted_to_continue'] = True
+    else:
+        session_attributes['user_prompted_to_start'] = True
+    return response_builder.build_json_response(helpOutput, "Respond to each question with your best guess.","","", session_attributes, False)
 
 def handle_on_session_end_request(event):
     goodbye = "Goodbye for now!"
@@ -141,6 +163,9 @@ def ask_to_start_a_new_game():
     session_attributes = {"user_prompted_to_start" : True}
     speech_output = "There is no game in progress. Do you want to start a new game?"
     return response_builder.build_json_response(speech_output, "","","", session_attributes, False)
+
+def has_session_attributes(event):
+    return event['session'] and event['session']['attributes']
 
 # SKILL SPECIFIC LOGIC
 
