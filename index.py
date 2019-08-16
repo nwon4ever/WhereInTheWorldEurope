@@ -75,7 +75,7 @@ def handle_answer(event):
     
 
 def handle_dont_know(event):
-    session_attributes = event['request']['intent']
+    session_attributes = event['session']['attributes']
     question = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
@@ -90,7 +90,7 @@ def handle_dont_know(event):
         return response_builder.build_json_response("{0}Game over! You got {1} out of {2} questions correct. Want to play again?".format(answer_pass_response,score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, False)
 
 def handle_repeat(event):
-    session_attributes=event['request']['intent']
+    session_attributes=event['session']['attributes']
     question = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
     return response_builder.build_json_response(question[curr_q_ind], "", "", "", session_attributes, False)
