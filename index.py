@@ -45,6 +45,12 @@ def on_intent_request(event):
         return on_launch()
     elif intent_name == "AMAZON.CancelIntent":
         return
+    else:
+        session_attributes = event['session']['attributes']
+        if not event['request']['intent']['slots']:
+            # unrecognized answer
+            event['request']['intent']['slots'] = {"Answer" : ""}
+            return handle_answer(event)
     #repeat
 
 def handle_answer(event):
@@ -79,8 +85,9 @@ def handle_dont_know(event):
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
-    answer_pass_response = "The answer is " + game_questions[curr_q_ind][1]
+    answer_pass_response = "The answer is {0}.".format(game_questions[curr_q_ind][1])
 
+    session_attributes["current_q_index"] += 1
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
         next_q = game_questions[curr_q_ind + 1][0]
         return response_builder.build_json_response("{0}. Next question. {1}".format(answer_pass_response, next_q), "", "", "", session_attributes, False)
