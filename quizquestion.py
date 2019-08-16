@@ -48,3 +48,5 @@ questions_other = [
 questions_all = questions_england + questions_france + questions_germany + questions_other
 questions_all = [QuizQuestion(q, a) for q, a in questions_all]
 print(QuizQuestion.get_game_questions([1]))
+
+
