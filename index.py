@@ -76,7 +76,18 @@ def handle_answer(event):
     
 
 def handle_dont_know(event):
-    pass
+    session_attributes=event['request']['intent']
+    answer=session_attributes['questions']
+    curr_q_ind = session_attributes["current_q_index"]
+
+    answer_pass_response= "The answer is " + answer[curr_q_ind][1]
+
+    if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
+        next_q = game_questions[curr_q_ind + 1][0]
+        return response_builder.build_json_response("{0} is {1} Next question. {2}".format(user_answer, result, next_q), "", "", "", session_attributes, False)
+    else:
+        return response_builder.build_json_response("Game over!", "", "", "", session_attributes, True)
+
 
 def handle_no(event):
     session_attributes = event['session']['attributes']
@@ -112,3 +123,9 @@ def populate_game_questions():
   return quizquestion.QuizQuestion.get_game_questions(indices)   
 
 print(populate_game_questions()) 
+
+
+
+
+
+
