@@ -83,7 +83,7 @@ def handle_dont_know(event):
 
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
         next_q = game_questions[curr_q_ind + 1][0]
-        return response_builder.build_json_response("{0}, Next question. {1}".format(answer_pass_response, next_q), "", "", "", session_attributes, False)
+        return response_builder.build_json_response("{0}. Next question. {1}".format(answer_pass_response, next_q), "", "", "", session_attributes, False)
     else:
         score = session_attributes["score"]
         session_attributes = {"user_prompted_to_start" : True}
@@ -93,7 +93,7 @@ def handle_repeat(event):
     session_attributes=event['session']['attributes']
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
-    return response_builder.build_json_response(game_questions[curr_q_ind], "", "", "", session_attributes, False)
+    return response_builder.build_json_response(game_questions[curr_q_ind][0], "", "", "", session_attributes, False)
 
 def handle_no(event):
     session_attributes = event['session']['attributes']
