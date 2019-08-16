@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": true,
+    "sessionId": "amzn1.echo-api.session.e9b3f7f0-472e-4650-98c3-054741b6a4f1",
+    "application": {
+      "applicationId": "amzn1.ask.skill.83f2b1db-db6b-498b-a8af-bdbdc6b0ba04"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.AFD2RD2QWYKWH3PDTNNSUO7CQ2WQQPXBGAXC5XKTBZF7KVJRXTYVTARGA7YQHUVTU7HDB7FFGFCVOIWULABCTYH62RLKYSROWHH4KBRHYOIEGCH5CNQXHFWVOBWDALLEAUZZVJI4ZEBCI7O5NKSPRV7SBOWPBJUZP4HOGZFVMNOSBXZ3QM3HKFHAM2CQHYYMBZXYD75BZQCFXJY"
+    },
+    "attributes": {
+        "current_q_index": 0,
+        "score": 0,
+        "questions": [
+            [
+                "What is the capital of Germany",
+                "Berlin"
+            ],
+            [
+                "In which city is the Eiffel Tower located?",
+                "Paris"
+            ],
+            [
+                "Which of the following countries has the highest population? France, Germany, Italy?",
+                "Germany"
+            ],
+            [
+                "What is the capital of France?",
+                "Paris"
+            ],
+            [
+                "In what country can you find a clock tower called the Big Ben?",
+                "UK"
+            ]
+        ]
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.cd7ffe8a-a939-47ca-bb97-1f9a9774e019",
+    "timestamp": "2019-08-12T07:39:21Z",
+    "locale": "en-US",
+    "intent": {
+        "name": "AnswerIntent",
+        "confirmationStatus": "NONE",
+        "slots": {
+            "Answer": {
+                "name": "Answer",
+                "value": "Berlin",
+                "resolutions": {
+                    "resolutionsPerAuthority": [
+                        {
+                            "authority": "amzn1.er-authority.echo-sdk.amzn1.ask.skill.83f2b1db-db6b-498b-a8af-bdbdc6b0ba04.Answer",
+                            "status": {
+                                "code": "ER_SUCCESS_NO_MATCH"
+                            }
+                        }
+                    ]
+                },
+                "confirmationStatus": "NONE",
+                "source": "USER"
+            }
+        }
+    }
+}
+}
