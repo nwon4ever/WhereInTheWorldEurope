@@ -44,9 +44,9 @@ def on_intent_request(event):
     elif intent_name == "AMAZON.NavigateHomeIntent":
         return on_launch()
     elif intent_name == "AMAZON.CancelIntent":
-        return
+        return handle_stop(event)
     elif intent_name == "AMAZON.StopIntent":
-        return
+        return handle_stop(event)
     else:
         session_attributes = event['session']['attributes']
         if not event['request']['intent']['slots']:
