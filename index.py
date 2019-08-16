@@ -106,7 +106,7 @@ def handle_repeat(event):
 
 def handle_stop(event):
     session_attributes = event['session']['attributes']
-    core = session_attributes["score"]
+    score = session_attributes["score"]
     return response_builder.build_json_response("Game over! You got {0} out of {1} questions correct. Thanks for playing!".format(score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, True)
 
 def handle_no(event):
