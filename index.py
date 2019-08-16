@@ -79,7 +79,7 @@ def handle_dont_know(event):
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
-    answer_pass_response = "The answer is " + question[curr_q_ind][1]
+    answer_pass_response = "The answer is " + game_questions[curr_q_ind][1]
 
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
             next_q = game_questions[curr_q_ind + 1][0]
@@ -91,9 +91,9 @@ def handle_dont_know(event):
 
 def handle_repeat(event):
     session_attributes=event['session']['attributes']
-    question = session_attributes['questions']
+    game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
-    return response_builder.build_json_response(question[curr_q_ind], "", "", "", session_attributes, False)
+    return response_builder.build_json_response(game_questions[curr_q_ind], "", "", "", session_attributes, False)
 
 def handle_no(event):
     session_attributes = event['session']['attributes']
