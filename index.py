@@ -76,7 +76,7 @@ def handle_answer(event):
 
 def handle_dont_know(event):
     session_attributes = event['session']['attributes']
-    question = session_attributes['questions']
+    game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
     answer_pass_response = "The answer is " + question[curr_q_ind][1]
