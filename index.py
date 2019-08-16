@@ -37,6 +37,8 @@ def on_intent_request(event):
         return handle_no(event)
     elif intent_name == "AMAZON.YesIntent":
         return handle_yes(event)
+    elif intent_name == "AMAZON.RepeatIntent":
+        return handle_repeat(event)
     elif intent_name == "AMAZON.HelpIntent":
         return handle_help(event)
     elif intent_name == "AMAZON.StartOverIntent":
@@ -73,11 +75,11 @@ def handle_answer(event):
     
 
 def handle_dont_know(event):
-    session_attributes=event['request']['intent']
-    game_questions=session_attributes['questions']
+    session_attributes = event['request']['intent']
+    question = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
 
-    answer_pass_response= "The answer is " + question[curr_q_ind][1]
+    answer_pass_response = "The answer is " + question[curr_q_ind][1]
 
     if session_attributes["current_q_index"] < int(NUM_GAME_QUESTIONS):
             next_q = game_questions[curr_q_ind + 1][0]
@@ -86,7 +88,6 @@ def handle_dont_know(event):
         score = session_attributes["score"]
         session_attributes = {"user_prompted_to_start" : True}
         return response_builder.build_json_response("{0}Game over! You got {1} out of {2} questions correct. Want to play again?".format(answer_pass_response,score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, False)
-
 
 def handle_repeat(event):
     session_attributes=event['request']['intent']
