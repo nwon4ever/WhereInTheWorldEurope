@@ -45,6 +45,8 @@ def on_intent_request(event):
         return on_launch()
     elif intent_name == "AMAZON.CancelIntent":
         return
+    elif intent_name == "AMAZON.StopIntent":
+        return
     else:
         session_attributes = event['session']['attributes']
         if not event['request']['intent']['slots']:
@@ -101,6 +103,11 @@ def handle_repeat(event):
     game_questions = session_attributes['questions']
     curr_q_ind = session_attributes["current_q_index"]
     return response_builder.build_json_response(game_questions[curr_q_ind][0], "", "", "", session_attributes, False)
+
+def handle_stop(event):
+    session_attributes = event['session']['attributes']
+    core = session_attributes["score"]
+    return response_builder.build_json_response("Game over! You got {1} out of {2} questions correct. Thanks for playing!".format(score, NUM_GAME_QUESTIONS), "", "", "", session_attributes, True)
 
 def handle_no(event):
     session_attributes = event['session']['attributes']
